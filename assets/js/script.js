@@ -7,21 +7,34 @@ $(document).ready(function() {
     $(".saveBtn").click(function() {
         var key = $(this).parent().attr('id'); // get the parent of selected btn amd get the value of id attribute
         var value  = $(this).siblings('.info').val();
-        localStorage.setItem(key , value);
+        if(value == "") {
+            alert("No data to save")
+        } else {
+            localStorage.setItem(key , value);   
+        }
     })
 
-    $("#time-9 .info").val(localStorage.getItem('time-9'));
-    $("#time-10 .info").val(localStorage.getItem('time-10'));
-    $("#time-11 .info").val(localStorage.getItem('time-11'));
-    $("#time-12.info").val(localStorage.getItem('time-12'));
-    $("#time-1 .info").val(localStorage.getItem('time-1'));
-    $("#time-2 .info").val(localStorage.getItem('time-2'));
-    $("#time-3 .info").val(localStorage.getItem('time-3'));
-    $("#time-4 .info").val(localStorage.getItem('time-4'));
-    $("#time-5 .info").val(localStorage.getItem('time-5'));
+    $(".deleteBtn").click(function() {
+        var key = $(this).parent().attr('id'); // get the parent of selected btn amd get the value of id attribute
+        $(this).siblings('.info').val("");
+        localStorage.setItem(key , "");
+    })
 
-
-    var currentHour = moment().format('H');
+    $(".clear").click(function(){
+        var sure = confirm("Are You sure you want to delete all data");
+        if(sure){
+            localStorage.clear()
+            loadData();
+        }
+    })
+    function loadData(){
+        var arry = [9,10,11,12,1,2,3,4,5]
+        for(var i = 0; i<arry.length; i++){
+            $("#time-" + arry[i] +" .info").val(localStorage.getItem('time-' + arry[i]));
+        }
+    }
+    loadData();
+    var currentHour = moment().format("H");
     var arr = [9 , 10 , 11 , 12 , 13 , 14 , 15 , 16 , 17];
     var time
     for(var i = 0 ; i < arr.length; i++) {
@@ -29,17 +42,14 @@ $(document).ready(function() {
         if(arr[i]>12){
             time = arr[i]-12
         }
-        console.log(time);
-        if(currentHour < time) {
+
+        if(currentHour < arr[i]) {
             $('#time-'+time +' .info').addClass('future');
-        } else if(currentHour > time  ) {
+        } else if(currentHour > arr[i]  ) {
             $('#time-'+time +' .info').removeClass('future');
             $('#time-'+time +' .info').addClass('past');
-        } else if(currentHour == time ) {
+        } else if(currentHour == arr[i] ) {
             $('#time-'+time +' .info').addClass('present');
         }
     }
-    
-
-    
 });
